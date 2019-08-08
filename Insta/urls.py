@@ -1,3 +1,6 @@
+# 这里的urls.py是管理这个Insta app的 URL 信息，这和global的Project粒的urls.py意思一样
+# 可以在global的Project粒的urls.py里面包括这个app的这个urls.py
+
 """InstagramSim URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -16,8 +19,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from Insta.views import HelloWorld  # 1. 从Insta这个app里面import HelloWord这个View
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # 如果传进来的app路径是以'Insta'开头的，那就去找/include这个app的url文件 Insta/'urls,py'
-    path('Insta/', include('Insta.urls')),
+    # 这里是app里的url, 那应该用fuction views, class-based views, or including another URLconf?
+    # 因为 class HelloWorld是一个class-based views, 所以用这个
+    # 2.当传入''作为默认路径时，会调HelloWord这个View的as_View(), 因为as_View()方法继承里TemplateView，可以直接用,把'test.html' render出来
+    path('', HelloWorld.as_view(), name='helloworld')
 ]
