@@ -1,0 +1,35 @@
+{% comment %} 
+这个html是希望可以显示图片，图片title等而用 
+{% endcomment %}
+
+{% load static %}
+
+<div>
+    {% for post in object_list %} <!--or for post in posts (posts根据views.py里定义的Post而自动生成的plural -> posts)-->
+        <!--对于每一个元素post obj都在这个html界面创建一个img, 它的source在django里的语法是找Post的model Post,找它的image field-->
+        <a href = "{% url 'post_detail' post.id %}"> 
+        <!--当点击图片时，会调用urls.py里定义的postView的path的alias -> name='post_detail'会进到这个path的post里, ID则由post in posts的post的ID这个field-->
+            <img src = "/{{post.image}}">
+        </a>
+       <!--Flow Chart: 
+       1.根据 MVT 流程，首先project的urls.py里如果输入的path是 http://localhost:8000/Insta
+       的话，那就回去访问 Insta 这个app的urls.py。
+       2.Insta app的urls.py设置了 path('posts/', PostsView.as_view(), name='posts')
+       说明如果这里我的path后面加了个posts/ 的话，就会去调用PostsView的as_View()。 
+       3.在Insta这个app里views.py里定义里model = Post (将model设置成models.py里的Post，然后PostsView会
+       创建object_list传入当前这个index.html里。
+       4.然后这里div里面会将img = 每一个object_list里的object的post的image field。
+       5.所以为了调出每一个object里的image field(一张图片)，<img src="static/images/posts/kobe.jpg">
+       但是当我想显示这个图片时，这个<img src="static/images/posts/kobe.jpg">会加在
+       http://localhost:8000/Insta/posts/上，就变成了
+       http://localhost:8000/Insta/posts/static/images/posts/kobe.jpg
+       这是一个错误的地址
+
+       解决办法：
+       <img src = "{{post.image}}"> 里加一个 '/', 这样就告诉<img src="static/iamges/posts/kobe.jpg">
+       要家在这个server的路径，eg. http://localhost:8000/Insta/posts/static/images/posts/kobe.jpg 而不是
+       当前路径 eg. http://localhost:8000/Insta/posts/static/images/posts/kobe.jpg
+       -->
+    {% endfor %}
+
+</div>

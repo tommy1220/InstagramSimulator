@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # 如果传进来的app路径是以'Insta'开头的，那就去找/include这个app的url文件 Insta/'urls,py'
+    # 如果传进来的app路径是以'Insta'开头的，那就去找/include这个app的url文件 Insta/'urls.py'
     path('Insta/', include('Insta.urls')),
 ]

@@ -1,0 +1,14 @@
+<!--
+根据Insta app的views.py 
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'post_detail.html'
+这里使用的model是Post, 并且会render到当前这个post_detail.html里
+
+双括号代表我在用django的语法糖, 
+当render进这个html里的object时，先展示它的title显示title field, 然后就是它的image field
+和index.html一样，为了正确访问到
+-->
+
+<p>{{ object.title }}</p> 
+<image src = "/{{object.image}}"> 

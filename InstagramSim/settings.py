@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Insta',
+    'imagekit',
 ]
 
 MIDDLEWARE = [
@@ -119,3 +120,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# 这里specify我的static/ 里的文件都可以通过join BASE_DIR(就是InstagramSIm这个project) 和 static/ 找到
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
