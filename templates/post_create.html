@@ -1,0 +1,16 @@
+
+<h1>New Post</h1>
+<!--当有人提交这个form的时候，会以POST这个method（other than GET, or other RESTs)发送这个请求
+    enctype 就是加密信息的方式->因为图片是多媒体文件，那就用multipart作为加密方式
+    
+    在Django里面，{ + % + % + } 是一个Django的template lanaguage, 这里的csrf_token是Django为了保护这里的form防止网络攻击
+
+    在Django里面 双括号{+{+}+}的意义就是Django在从url里as_view()然后postCreatView会传递到这个html一个form,
+    (正如ListView会传入list_object, detailView会传入object一样), 这里的form就是由Post这个model组成的。然后调用这个form的
+    一个method as_p, which让form里面的每一个元素都当作一个paragraph显示出来
+    -->
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>

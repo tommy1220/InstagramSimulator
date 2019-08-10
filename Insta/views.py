@@ -1,4 +1,8 @@
 from django.views.generic import TemplateView, ListView, DetailView
+# 为了user interaction会遇到的security, error handling, UI alert, redirect等问题， django提供的Form提供了很好的平台
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+
 from Insta.models import Post
 
 
@@ -22,3 +26,27 @@ class PostsView(ListView):  # inherit from ListView
 class PostDetailView(DetailView):
     model = Post
     template_name = 'post_detail.html'
+
+
+# 同上逻辑；同时为了加一个feature, 根据MVT需要改views, models, templates, 还有url configs
+class PostCreateView(CreateView):
+    model = Post  # CreateView是create 什么东西呢？用的model还是import进来的Post的model
+    template_name = 'post_create.html'  # 创建什么页面呢？
+    # 在CreateView里有一个attribute叫做fields, 可以从model里来(Post)。这里就是在说当create一个model的时候，希望用户提供哪些field? 因为想要用户提供全部的attributes, 那就是all
+    fields = '__all__'
+    # 这样因为写了__all__ 当全部当attributes从model里拿出来后，会被render到post_create.html里
+
+
+class PostUpdateView(UpdateView):
+    model = Post
+    template_name = 'post_update.html'
+    fields = ['title']
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = 'post_delete.html'
+    # 不存在哪个fields了，全删了
+    success_url = reverse_lazy("posts")
+    # 因为调用这个View时就在删东西了，如果此时使用reverse的话，就相当于一边删除一遍跳转，这是不允许的。所以要用reverse_lazy来
+    # lazily delete这个model object

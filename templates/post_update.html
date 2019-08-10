@@ -1,0 +1,13 @@
+
+<h1>Edit Post</h1>
+<!--和post_create一样，PostUpdateView是一个UpdateView的实例。而UpdateView, CreateView, DeleteView
+    全都是Generic Editing Views的子类，Editing Views又是FormView的子类。
+    FormView会在html上render各种forms，使得users可以interact with
+
+    但是这里form.as_p只会出现一个段落，因为在fields = ['title']里面定义的是只能提供一个field
+    -->
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update</button>
+</form>

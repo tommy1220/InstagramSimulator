@@ -10,5 +10,19 @@ class PostDetailView(DetailView):
 和index.html一样，为了正确访问到
 -->
 
+<div>
+    <!--当有人点击时，会调用urls.py里定义的PostUpdateeView的path的alias -> name='post_update' 和 当前object.id
+    会进到这个path , 通过这个url的解析, 会跳转到post/new/ID -> PostUpdateView.as_View() -> 将Post这个model的
+    attribute ['title']当成form传入template_name = 'post_update.html'
+
+    这里update完了以后不会出现create时遇到的"create完找不到URL to go to"的问题，因为Update Post也是在Post
+    这个Model上做操作，然而现在Post已经有了get_absolute_url了
+
+    delete同理
+    -->
+    <a href="{% url 'post_update' object.id %}"> Update Post </a>
+    <a href="{% url 'post_delete' object.id %}"> Delete Post </a>
+</div>
+
 <p>{{ object.title }}</p> 
 <image src = "/{{object.image}}"> 
