@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 from Insta.models import Post
+from django.contrib.auth.forms import UserCreationForm
 
 
 class HelloWorld(TemplateView):  # now HelloWorld extends from TplV, has all its methods
@@ -50,3 +51,14 @@ class PostDeleteView(DeleteView):
     success_url = reverse_lazy("posts")
     # 因为调用这个View时就在删东西了，如果此时使用reverse的话，就相当于一边删除一遍跳转，这是不允许的。所以要用reverse_lazy来
     # lazily delete这个model object
+
+
+# 对于user login.logout来讲，因为Django提供的LoginView里提供了很多自带features, 但是user sign up没有，所以需要自定义
+
+
+class SignUp(CreateView):
+    # CreatseView, UpdateView,DeleteView都是基于表格/Form，如上面Post就是那些View的表格，但是在Create User的时候
+    # 相当于在使用一个组合了 fields + model 的form, 也就是from django.contrib.auth.forms import UserCreationForm里的UserCreationForm
+    form_class = UserCreationForm
+    template_name = 'signup.html'
+    success_url = reverse_lazy("login")

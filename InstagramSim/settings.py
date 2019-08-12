@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from django.conf.global_settings import LOGIN_REDIRECT_URL
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -123,3 +125,8 @@ STATIC_URL = '/static/'
 
 # 这里specify我的static/ 里的文件都可以通过join BASE_DIR(就是InstagramSIm这个project) 和 static/ 找到
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# 这是定义在Django User Model里的，这里需要specify我login以后会redirect到哪个界面。我想去'posts'
+LOGIN_REDIRECT_URL = 'posts'
+
+LOGOUT_REDIRECT_URL = 'posts'

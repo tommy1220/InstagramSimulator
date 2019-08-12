@@ -1,0 +1,29 @@
+<!--in class LoginView: 
+        URL name : Login
+        Attributes:
+            template_name: The name of a template to display for the view used to log the user in. 
+                           Defaults to resgitration/login.html
+
+    Django提供的LoginView规定要在templates/底下放一个registration/这个folder, 里面要放这个login.html
+    才能使用LoginView
+    
+    类似于：
+    class LoginView:
+        template_name = 'login.html'
+        success_url =  reverse(LOGIN_REDIRECT_URL)
+        model = User 
+        fields = ['username', 'password']
+    和Insta App下我自己定义的Views是一样的
+-->
+
+
+<h1>Login</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }} <!--和Insta下的那些html一样，把loginView传入进来的object的attributes都当作form，并且以
+                        段落的形式展示出来-->
+    <button type="submit">Login</button> <!--同create,update,delete 点击后需要redirect to another URL
+                                             django.auth specify要在settings.py里设置一个
+                                             LOGIN_REDIRECT_URL-->
+</form>

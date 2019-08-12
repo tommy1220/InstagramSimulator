@@ -4,6 +4,31 @@
 
 {% load static %}
 
+<ul>
+    {% if request.user.is_authenticated %}
+        <li>
+            Hi, {{request.user.username}}
+        </li>
+
+        <li>
+            <a href="{% url 'logout' %}"> logout</a>
+        </li>
+
+    {% else %}
+        <li>
+            <a href="{% url 'login' %}"> Login</a> <!--这里的‘login'和我自己定义的Post一样，是从Django的auth里定义的-->
+        </li>
+
+        <li>
+            <a href="{% url 'signup' %}"> Sign up</a>
+        </li>
+        
+    {% endif %}
+</ul>
+
+
+
+
 <div>
     <!--当有人点击时，会调用urls.py里定义的PostCreateView的path的alias -> name='make_post'
     会进到这个path , 通过这个url的解析, 会跳转到post/new/ -> PostCreateView.as_View() -> 将Post这个model的
