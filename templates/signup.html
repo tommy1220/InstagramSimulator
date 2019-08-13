@@ -1,7 +1,7 @@
 
-<h1>Sing Up</h1>
+<h1>Sign Up</h1>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data"> <!--因为Sign Up时可以提交用户照片，所以需要多媒体-->
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Sign Up</button>

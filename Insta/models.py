@@ -1,6 +1,7 @@
 from django.db import models
 from imagekit.models import ProcessedImageField
 from django.urls import reverse  # urls库里的reverse函数可以帮助get_absolute_url
+from django.contrib.auth.models import AbstractUser
 
 
 class Post(models.Model):  # 所有model的class都要继承models
@@ -39,6 +40,19 @@ class Post2(models.Model):  # 所有model的class都要继承models
     title = models.TextField(blank=True, null=True)
     image = ProcessedImageField(  # 定义的第二个field 是 ProcessImageField(imported from imagekit)第三方library里的类型
         upload_to='static/images/posts',  # 图片应该上传到哪里
+        format='JPEG',
+        options={'quality': 100},
+        blank=True,
+        null=True
+    )
+
+
+# 为了可以自定义user类能干嘛，而不是仅仅局限于django自带的user views, 那么就可以继承一个AbstractUser
+# 但是自从创建里InstaUser之后，在此之前所用的Django.auth的user view就不能被使用里。
+# 这里的programming code虽然定义好了新的user, 但是数据库并不知道，所以需要python manage.py makemigration, and migrate一下
+class InstaUser(AbstractUser):
+    profile_pic = ProcessedImageField(  # 定义的第二个field 是 ProcessImageField(imported from imagekit)第三方library里的类型
+        upload_to='static/images/profiles',  # 图片应该上传到哪里
         format='JPEG',
         options={'quality': 100},
         blank=True,

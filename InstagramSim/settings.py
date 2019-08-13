@@ -130,3 +130,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 LOGIN_REDIRECT_URL = 'posts'
 
 LOGOUT_REDIRECT_URL = 'posts'
+
+# 告诉Django别再用自己的auth的User model了，用我创建的InstaUser model
+AUTH_USER_MODEL = 'Insta.InstaUser'

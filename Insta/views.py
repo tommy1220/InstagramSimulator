@@ -4,7 +4,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 from Insta.models import Post
-from django.contrib.auth.forms import UserCreationForm
+from Insta.forms import CustomUserCreationForm
+
+# 一个用于给PostView等使用的multi-inheritance：目的就是使得用户不login就看不到
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class HelloWorld(TemplateView):  # now HelloWorld extends from TplV, has all its methods
@@ -30,12 +33,14 @@ class PostDetailView(DetailView):
 
 
 # 同上逻辑；同时为了加一个feature, 根据MVT需要改views, models, templates, 还有url configs
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post  # CreateView是create 什么东西呢？用的model还是import进来的Post的model
     template_name = 'post_create.html'  # 创建什么页面呢？
     # 在CreateView里有一个attribute叫做fields, 可以从model里来(Post)。这里就是在说当create一个model的时候，希望用户提供哪些field? 因为想要用户提供全部的attributes, 那就是all
     fields = '__all__'
     # 这样因为写了__all__ 当全部当attributes从model里拿出来后，会被render到post_create.html里
+    # 因为继承了LoginRequiredMixin, 所以还么login的话就要跳转到login界面
+    login_url = 'login'
 
 
 class PostUpdateView(UpdateView):
@@ -59,6 +64,6 @@ class PostDeleteView(DeleteView):
 class SignUp(CreateView):
     # CreatseView, UpdateView,DeleteView都是基于表格/Form，如上面Post就是那些View的表格，但是在Create User的时候
     # 相当于在使用一个组合了 fields + model 的form, 也就是from django.contrib.auth.forms import UserCreationForm里的UserCreationForm
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     template_name = 'signup.html'
     success_url = reverse_lazy("login")
