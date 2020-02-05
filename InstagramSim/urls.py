@@ -24,7 +24,7 @@ from Insta.views import SignUp
 urlpatterns = [
     path('admin/', admin.site.urls),
     # 如果传进来的app路径是以'Insta'开头的，那就去找/include这个app的url文件 Insta/'urls.py'
-    path('Insta/', include('Insta.urls')),
+    path('', include('Insta.urls')),
     # 如果传进来的App是auth, 那就交给django自己提供的authorization feature app处理, which is installed in settings.py when I 'python startproject'
     path('auth/', include('django.contrib.auth.urls')),
     path('auth/signup/', SignUp.as_view(), name='signup'),

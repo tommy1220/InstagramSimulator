@@ -1,0 +1,22 @@
+<ul>
+        {% if request.user.is_authenticated %}
+        <li>
+            Hi, {{request.user.username}}
+        </li>
+    
+        <li>
+            <a href="{% url 'logout' %}"> logout</a>
+        </li>
+    
+        {% else %}
+        <li>
+            <a href="{% url 'login' %}"> Login</a>
+            <!--这里的‘login'和我自己定义的Post一样，是从Django的auth里定义的-->
+        </li>
+    
+        <li>
+            <a href="{% url 'signup' %}"> Sign up</a>
+        </li>
+    
+        {% endif %}
+    </ul>

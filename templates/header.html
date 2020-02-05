@@ -1,0 +1,32 @@
+<div class="navbar navbar-default navbar-fixed-top" id="main-nav">
+        <div class="container desktop">
+            <div class="navbar-header">
+                <!-- 点击Tommy Instagram Simulator时会跳到posts（首页）去 -->
+                <a href="{% url 'posts' %}" class="navbar-brand">Tommy Instagram Simulator</a>
+            </div>
+    
+            <div id="navbar-main">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if request.user.is_authenticated %}
+                        <li>
+                          <a href="{% url 'posts' %}">
+                            <i class="fa fa-home" aria-hidden="true"></i>
+                          </a>
+                        </li>
+                        <li><a href="{% url 'Bello Papagena' %}"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                        <li><a href="{% url 'make_post' %}"><i class="fa fa-plus" aria-hidden="true"></i></a></li>
+                        <li><a href="{% url 'Bello Papagena' %}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
+                    <!-- 如果用户还没有登陆过 -->
+                    {% else %}
+                        <li>
+                            <a href="{% url 'login' %}">login</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'signup' %}">signup</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>

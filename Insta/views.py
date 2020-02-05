@@ -1,14 +1,17 @@
+# pylint: disable=no-member
 from django.views.generic import TemplateView, ListView, DetailView
 # 为了user interaction会遇到的security, error handling, UI alert, redirect等问题， django提供的Form提供了很好的平台
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
-from Insta.models import Post
+from Insta.models import Post, Like
 from Insta.forms import CustomUserCreationForm
 
 # 一个用于给PostView等使用的multi-inheritance：目的就是使得用户不login就看不到
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+# imported for using ajax request. need to do---> pipenv install django-annoying
+from annoying.decorators import ajax_request
 
 class HelloWorld(TemplateView):  # now HelloWorld extends from TplV, has all its methods
     # now set the tplV's attribute template_name to someting I need
@@ -67,3 +70,25 @@ class SignUp(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'signup.html'
     success_url = reverse_lazy("login")
+
+
+
+@ajax_request #这个函数是专门响应ajax用的，所以不用render到一个template上，所以不用专门设置一个views class
+def addLike(request):
+    post_pk = request.POST.get('post_pk') #通过request里对POST请求里，通过key='post_pk'拿value
+    post = Post.objects.get(pk=post_pk) # 从Post这个model里全部的objects里拿pk等于上面拿到的pk的那个post. Django里允许用pk = ... 或者 id =... 
+    try:
+        like = Like(post=post, user=request.user) #Constructor, param: post & request.user
+        like.save() # after constructing the Like object, need to save it to database
+        # like is already existed, 因为like关系是unique_together(user), throw exception
+        result = 1
+    except Exception as e:
+        like = Like.objects.get(post=post, user=request.user) # like object以及存在，说明用户此时点这个“点赞”是在“取消赞”
+        like.delete() # 取消点赞
+        result = 0
+    # result is what's gonna be returned as a response
+
+    return {
+        'result': result,
+        'post_pk': post_pk
+    }

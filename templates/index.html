@@ -1,71 +1,96 @@
-{% comment %} 
-这个html是希望可以显示图片，图片title等而用 
-{% endcomment %}
+{% extends "base.html" %}
 
-{% load static %}
+{% load custom_tags %}
 
-<ul>
-    {% if request.user.is_authenticated %}
-        <li>
-            Hi, {{request.user.username}}
-        </li>
+{% block content %}
 
-        <li>
-            <a href="{% url 'logout' %}"> logout</a>
-        </li>
+<div class="cards-listing">
+    <!-- loop一遍传入到这个界面的object_list -->
+    {% for post in object_list %}
+    <!--bootstrap里的一个很重要的component。bootstrap把一个界面当作一个grid：这样把一个界面有序化，当作一列列地看
+        另外一点：在我放大缩小browser窗口的时候，假如我把一个page分成三个cols, 它们会随着我的窗口放大缩小而等例放生形变
+        不管怎么变，这三个cols都会只占当前窗口大小等1/3，除非缩小到一个limit, 它们三个才会噌一下变成上下排列关系 -->
+    <div class="row">
+        <div class="card view-update {{ post.pk }}">
 
-    {% else %}
-        <li>
-            <a href="{% url 'login' %}"> Login</a> <!--这里的‘login'和我自己定义的Post一样，是从Django的auth里定义的-->
-        </li>
+            <!-- 用户信息 -->
+            <div class="card__panel-head">
+                <div class="poster__info">
+                    <a href="{% url 'Bello Papagena' %}" class="poster__name">
+                        {% if post.author.profile_pic %}
+                        <img class="poster__profilepic" src="{{ post.author.profile_pic.url }}">
+                        {% endif %}
+                        {{ post.author.username }}
+                    </a>
 
-        <li>
-            <a href="{% url 'signup' %}"> Sign up</a>
-        </li>
-        
-    {% endif %}
-</ul>
-
-
+                </div>
+            </div>
 
 
-<div>
-    <!--当有人点击时，会调用urls.py里定义的PostCreateView的path的alias -> name='make_post'
-    会进到这个path , 通过这个url的解析, 会跳转到post/new/ -> PostCreateView.as_View() -> 将Post这个model的
-    全部的attributes '__all__' 当成form传入template_name = 'post_creat.html'
-    -->
-    <a href="{% url 'make_post' %}"> Make Post </a>
-</div>
+            <a href="{% url 'post_detail' post.pk %}">
+                <img class="card__main-image" src="/{{ post.image.url }}">
+            </a>
+
+
+            <div class="card__panel-body">
+                <!-- 点赞部分 -->
+                <div class="likes">
+                    {% if post.get_like_count %}
+                    {{ post.get_like_count }} like{% if post.get_like_count > 1 %}s{% endif %}
+                    {% endif %}
+                </div>
+                <!-- 我想让用户点赞或者取消赞后，只有小爱心和赞的数量发生改变。如果用view.py来实现的话，整个page都要render一遍
+                    所以这时候就需要用ajax来做局部渲染 : single page applcation -->
+                <section class="input-row">
+                    <!-- has_user_liked_post是个我自己定义的template, 传入两个参数post, user。
+                        定义在Insta/templatetags/custome_tags.py里。
+                        这样的话我自己的template language就和Django的template language url, if, for... 那些tag一样可以使用了
+                        return的东西是什么都定义在has_user_liked_post里了 -->
+                    <i class="fa {% has_user_liked_post post user %} submit-like" aria-hidden="true"></i>
+                    <!-- 这段hidden-data用户看不到，但是为了index.js里能调用
+                            var post_pk = $(this).siblings('.hidden-data').find('.post-pk').text();
+                         时拿得到 （这里到this，当前的object, 是submit-like, 它的sibling中有一个叫做hidden-data, 
+                         再往里头找class = post.pk 里的东西，然后找到了 {_{_post.pk_}_}, convert to text, save it to vat -->
+                    <div class="hidden-data {{ post.pk }}" style="display: none;">
+                            <span class="post-pk">{{ post.pk }}</span>
+                    </div>
+                </section>
+
+                
+                <!-- 评论部分 -->
+                {% comment %}
+                <ul class="comment-list">
+                    <a class="view-more"></a>
+                    {% for comment in post.comments.all %}
+                    <li class="comment-list__comment">
+                        <a href="{% url 'profile' comment.user.pk %}" class="user">
+                            {{ comment.user.username }}
+                        </a>
+                        <span class="comment">{{ comment.comment }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <section class="input-row">
+                    <i class="fa {% has_user_liked_post post user %} submit-like" aria-hidden="true"></i>
+                    <div class="comment-input-wrapper">
+                        <input class="add-comment" type="text" placeholder="Add a comment...">
+                    </div>
+                    <div class="hidden-data {{ post.pk }}" style="display: none;">
+                        <span class="post-pk">{{ post.pk }}</span>
+                    </div>
+                </section>                   
+                {% endcomment %}
+                
+
+            </div>
 
 
 
-<div>
-    {% for post in object_list %} <!--or for post in posts (posts根据views.py里定义的Post而自动生成的plural -> posts)-->
-        <!--对于每一个元素post obj都在这个html界面创建一个img, 它的source在django里的语法是找Post的model Post,找它的image field-->
-        <a href = "{% url 'post_detail' post.id %}"> 
-        <!--当点击图片时，会调用urls.py里定义的postView的path的alias -> name='post_detail' ->
-        通过这个url的解析, 会跳转到 PostView.as_view() -> 传入posts里的这个post, ID则由post in posts的post的ID这个fieldd到post_detail.html-->
-            <img src = "/{{post.image}}">
-        </a>
-       <!--Flow Chart: 
-       1.根据 MVT 流程，首先project的urls.py里如果输入的path是 http://localhost:8000/Insta
-       的话，那就回去访问 Insta 这个app的urls.py。
-       2.Insta app的urls.py设置了 path('posts/', PostsView.as_view(), name='posts')
-       说明如果这里我的path后面加了个posts/ 的话，就会去调用PostsView的as_View()。 
-       3.在Insta这个app里views.py里定义里model = Post (将model设置成models.py里的Post，然后PostsView会
-       创建object_list传入当前这个index.html里。
-       4.然后这里div里面会将img = 每一个object_list里的object的post的image field。
-       5.所以为了调出每一个object里的image field(一张图片)，<img src="static/images/posts/kobe.jpg">
-       但是当我想显示这个图片时，这个<img src="static/images/posts/kobe.jpg">会加在
-       http://localhost:8000/Insta/posts/上，就变成了
-       http://localhost:8000/Insta/posts/static/images/posts/kobe.jpg
-       这是一个错误的地址
 
-       解决办法：
-       <img src = "{{post.image}}"> 里加一个 '/', 这样就告诉<img src="static/iamges/posts/kobe.jpg">
-       要家在这个server的路径，eg. http://localhost:8000/Insta/posts/static/images/posts/kobe.jpg 而不是
-       当前路径 eg. http://localhost:8000/Insta/posts/static/images/posts/kobe.jpg
-       -->
+        </div>
+    </div>
     {% endfor %}
-
 </div>
+
+{% endblock content %}

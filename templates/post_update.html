@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 
 <h1>Edit Post</h1>
 <!--和post_create一样，PostUpdateView是一个UpdateView的实例。而UpdateView, CreateView, DeleteView
@@ -11,3 +15,5 @@
     {{ form.as_p }}
     <button type="submit">Update</button>
 </form>
+
+{% endblock content %}

@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <!-- 要想用到名字叫'static'所指向的地方，即settings.py里设置的STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+    那就必须先要load进到base.html里让html知道我在用这个alias -->
+    {% load static %}
+    <!-- 编码方式 -->
+    <meta charset="utf-8">
+    <!-- 如果在手机上看，应该怎么样的scale -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tommy Instagram Similator</title>
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/font-awesome-4.6.3/css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- 可见，{% load static %}可以在<head>之外globally load -->
+    {% load static %}
+    <!-- 我们希望每个页面的最上方都有一个header的样式，所以写进一个header.html，
+        以后每个别的html都include一下就行: segregation of duties -->
+    {% include 'header.html' %}
+
+
+    <div class="content-wrapper">
+        <div class="container">
+            {% block content %}
+            {% endblock content%}
+        </div>
+    </div>
+
+    <!-- 把bootsrap等外包include -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.1.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/ajax-csrf-auth.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+
+    <!-- 就如block content一样 -->
+    {% block extrascript %}
+    {% endblock %}
+
+</body>
+
+</html>
+
+
+
