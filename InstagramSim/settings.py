@@ -136,4 +136,8 @@ LOGOUT_REDIRECT_URL = 'posts'
 # 告诉Django别再用自己的auth的User model了，用我创建的InstaUser model
 AUTH_USER_MODEL = 'Insta.InstaUser'
 
+# 本来本地static files是不能够传到heroku上的。但是whitenoise化一下就可以“欺骗”heroku，让它以为static里的照片等文件都是是我的whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# static_root：当whitenoise收集我的static文件时，指定放在哪里
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
