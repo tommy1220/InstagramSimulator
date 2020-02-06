@@ -135,3 +135,5 @@ LOGOUT_REDIRECT_URL = 'posts'
 
 # 告诉Django别再用自己的auth的User model了，用我创建的InstaUser model
 AUTH_USER_MODEL = 'Insta.InstaUser'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
