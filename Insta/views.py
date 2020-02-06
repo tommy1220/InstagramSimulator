@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
-from Insta.models import Post, Like
+from Insta.models import Post, Like, InstaUser, UserConnection
 from Insta.forms import CustomUserCreationForm
 
 # 一个用于给PostView等使用的multi-inheritance：目的就是使得用户不login就看不到
@@ -28,6 +28,16 @@ class PostsView(ListView):  # inherit from ListView
     # 我还希望这个class可以用index.html的template作为显示，所以要去urls.py进行import，还要去templates/ 添加index.html
     template_name = 'index.html'
 
+    # Overwrite ListView自带的get_queryset(): 
+    # get the list of items for this View. query的结果的posts给到index.html里， 而不是无脑全部的posts
+    def get_queryset(self):
+        # 默认： return Post.objects()
+        # updated: 只把用户关注的用户的posts放到网页
+        current_user = self.request.user
+        following = set()
+        for conn in UserConnection.objects.filter(creator=current_user).select_related('following'):
+            following.add(conn.following)
+        return Post.objects.filter(author__in=following)
 
 # 同上逻辑；同时为了加一个feature, 根据MVT需要改views, models, templates, 还有url configs
 class PostDetailView(DetailView):
@@ -71,6 +81,10 @@ class SignUp(CreateView):
     template_name = 'signup.html'
     success_url = reverse_lazy("login")
 
+
+class UserDetailView(DetailView):
+    model = InstaUser
+    template_name = 'user_detail.html'
 
 
 @ajax_request #这个函数是专门响应ajax用的，所以不用render到一个template上，所以不用专门设置一个views class

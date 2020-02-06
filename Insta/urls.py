@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 # 1. 从Insta这个app里面import HelloWord这个View  2.and PostsView  3.and PostDetailView
-from Insta.views import HelloWorld, PostsView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, addLike
+from Insta.views import HelloWorld, PostsView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, addLike, UserDetailView
 
 urlpatterns = [
     # 这里是app里的url, 那应该用fuction views, class-based views, or including another URLconf?
@@ -37,4 +37,5 @@ urlpatterns = [
     path('post/update/<int:pk>', PostUpdateView.as_view(), name="post_update"),
     path('post/delete/<int:pk>', PostDeleteView.as_view(), name="post_delete"),
     path('like', addLike, name='addLike'),
+    path('user/<int:pk>/', UserDetailView.as_view(), name='user_detail'),
 ]

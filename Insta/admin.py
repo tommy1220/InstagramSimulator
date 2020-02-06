@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Insta.models import Post, InstaUser, Like
+from Insta.models import Post, InstaUser, Like, UserConnection
 
 # Register your models here.
 
@@ -7,6 +7,7 @@ from Insta.models import Post, InstaUser, Like
 admin.site.register(Post)
 admin.site.register(InstaUser)
 admin.site.register(Like)
+admin.site.register(UserConnection)
 # notes: 在某milestone之前我使用的都是django.auth自带的user, 但是自从我换成自定义的
 # customUser之后，之前的admin一只在用的user会出问题。但是因为django自带的user不能解决这个
 # 统一问题，所以只能暴力删除db。 最好的办法就是在design的时候做好决定, 或者一开始就使用自定义CustomUser。

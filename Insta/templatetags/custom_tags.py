@@ -11,6 +11,7 @@ from Insta.models import Like
 register = template.Library()
 
 @register.simple_tag
+# 当前user是否是这个user点进去的background_user的follower
 def is_following(current_user, background_user):
     return background_user.get_followers().filter(creator=current_user).exists()
 

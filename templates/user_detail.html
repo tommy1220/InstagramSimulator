@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% load custom_tags %}
+
+{% block content %}
+
+<div class="profile">
+
+    <div class="profile__head">
+        <div class="row">
+            {% comment %} 一个row一共12个unit大小, 头4个用来显示照片 {% endcomment %}
+            <div class="col-xs-4 left">
+                {% if object.profile_pic %}
+                    <img class="picture-circle" src="/{{object.profile_pic}}">
+                {% endif %}
+            </div>
+
+            {% comment %} 剩下8个unit大小显示名字 {% endcomment %}
+            <div class="col-xs-8 right">
+                <div class="name-buttons">
+                    <h1 class="username">{{ object.username }}</h1>
+                    {% comment %} 是本人的话 {% endcomment %}
+                    {% if user == object %} 
+                        <button class="edit-profile">Edit Profile</button>
+                        {% comment %}  for future editing_profile functionalities
+
+                        <a class="edit-desktop" href="{% url 'edit_profile' object.pk %}">
+                            <button class="edit-profile">Edit Profile</button>
+                        </a> {% endcomment %}
+                    {% comment %} 不是本人的话 {% endcomment %}
+                    {% else %}
+                        {% comment %} 在custom_tags里创造一个自定义html tag is_following 
+                            parem1: user (当前点击进「别人」用户界面的用户)  parem2: 「别人」  result: saved as 'following'
+                        {% endcomment %}
+                        {% is_following user object as following %}
+                        <div class="follow-toggle__container">
+                            {% comment %} 如果following的话，class = follow-user; 否则 = unfollow-user {% endcomment %}
+                            <button class="btn btn-primary {% if not following %}follow-user{% else %}unfollow-user{% endif %}" id="{{ object.pk }}">
+                                {% if following %}
+                                    Unfollow
+                                {% else %}
+                                    Follow
+                                {% endif %}
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <ul class="stats">
+                        <div class="col-xs-4"><li class="stats__count"><span>{{ object.my_posts.count }}</span><br> posts</li></div>
+                        <div class="col-xs-4"><a href="/" style="text-decoration: none; color: black;"><li class="stats__count"><span class="follower_count" id="follower_id">{{ object.get_followers.count }}</span><br> followers</li></a></div>
+                        <div class="col-xs-4"><a href="/" style="text-decoration: none; color: black;"><li class="stats__count"><span>{{ object.get_connections.count }}</span><br> following</li></a></div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile__body">
+        <div class="row">
+        {% for post in object.my_posts.all %}
+            <div class="col-xs-4">
+                <div class="picture-square" style="background-image: url(http://{{ request.META.HTTP_HOST }}/{{ post.image.url }}); background-size: contain;">
+                    <a href="{% url 'post_detail' post.pk %}">
+                    <div class="content">
+                        <i class="fa fa-heart" aria-hidden="true"></i> {{ post.get_like_count }}
+                        {% comment %} <i class="fa fa-comment" aria-hidden="true"></i> {{ post.get_comment_count }} {% endcomment %}
+                    </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

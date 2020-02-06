@@ -16,6 +16,23 @@ class InstaUser(AbstractUser):
         null=True
     )
 
+    def get_connections(self):
+        connections = UserConnection.objects.filter(creator=self) # 不能用get, 因为get只能返回一个值
+        return connections
+
+    def get_followers(self):
+        followers = UserConnection.objects.filter(following=self)
+        return followers
+
+    def is_followed_by(self, user):
+        followers = UserConnection.objects.filter(following=self)
+        return followers.filter(creator=user).exists()
+
+    # def get_absolute_url(self):
+    #     return reverse('profile', args=[str(self.id)])
+
+    # def __str__(self):
+    #     return self.username    
 
 class Post(models.Model):  # 所有model的class都要继承models
     # 因为一个Post肯定是一个用户发的，所以向外指向一个InstaUser
@@ -117,15 +134,21 @@ class Like(models.Model):
 #         return self.comment
 
 
+# Connection1 = A follows B :  creator(A)  following(B)  
+# Connection 2 = A follows C
+# Connection 3 = C follows A
+# A.friendship_creator_set = {connection1, connection2} 
+# A.friend_set = {connectino3}
+class UserConnection(models.Model):
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    creator = models.ForeignKey(
+        InstaUser,
+        on_delete=models.CASCADE,
+        related_name="friendship_creator_set")
+    following = models.ForeignKey(
+        InstaUser,
+        on_delete=models.CASCADE,
+        related_name="friend_set")
 
-
-# class Post2(models.Model):  # 所有model的class都要继承models
-#     # 定义里一个title field, 可以是blank，也可以是null
-#     title = models.TextField(blank=True, null=True)
-#     image = ProcessedImageField(  # 定义的第二个field 是 ProcessImageField(imported from imagekit)第三方library里的类型
-#         upload_to='static/images/posts',  # 图片应该上传到哪里
-#         format='JPEG',
-#         options={'quality': 100},
-#         blank=True,
-#         null=True
-#     )
+    def __str__(self):
+        return self.creator.username + ' follows ' + self.following.username

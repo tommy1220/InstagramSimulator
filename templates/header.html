@@ -15,7 +15,7 @@
                         </li>
                         <li><a href="{% url 'Bello Papagena' %}"><i class="fa fa-search" aria-hidden="true"></i></a></li>
                         <li><a href="{% url 'make_post' %}"><i class="fa fa-plus" aria-hidden="true"></i></a></li>
-                        <li><a href="{% url 'Bello Papagena' %}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                        <li><a href="{% url 'user_detail' user.id %}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
                         <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
                     <!-- 如果用户还没有登陆过 -->
                     {% else %}
