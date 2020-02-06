@@ -1,0 +1,1 @@
+web: gunicorn InstagramSim.wsgi --log-file -
